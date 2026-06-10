@@ -119,22 +119,6 @@ streamlit run hypothesis1results_log.py
 For large sweeps, `run_hypothesis1.sh` shows the GNU Parallel commands used to
 run multiple seeds, left-out classes, and hyperparameter settings.
 
-## Citation
-
-If you use this code, please cite:
-
-```bibtex
-@misc{sergin2024imagebased,
-  title = {Image-based Novel Fault Detection with Deep Learning Classifiers using Hierarchical Labels},
-  author = {Sergin, Nurettin and Huang, Jiayu and Chang, Tzyy-Shuh and Yan, Hao},
-  year = {2024},
-  eprint = {2403.17891},
-  archivePrefix = {arXiv},
-  primaryClass = {cs.LG},
-  doi = {10.48550/arXiv.2403.17891}
-}
-```
-
 ## Notes
 
 - `rolling_hierarchy_description.json` defines the coarse-to-fine label
