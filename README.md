@@ -1,56 +1,104 @@
-# README
+# Novel Fault Detection with Hierarchical Labels
 
-## Recreating the Conda Environment
-There is an `environment.yml` file in the zipped folder. You can use that easily to recreate the virtual envirnoment used in this study.
+This repository contains experiment code for hierarchical anomaly and novelty
+detection on a hot steel rolling image dataset. The project compares flat
+classification against hierarchy-aware soft-label training, then evaluates
+out-of-distribution detection behavior with metrics and plots such as MSP,
+ODIN, and Mahalanobis/GDA distance summaries.
 
-## Changes to the .env file
-There is a file called .env which holds all the paths to important folders.
+## Repository Structure
 
-Go and check it out, you probably only need to change the `ROLLING_DATA_PATH`.
+```text
+.
+|-- src/
+|   |-- datasets/          # Dataset loading and image transforms
+|   |-- models/            # PyTorch model definitions
+|   |-- gda.py             # Gaussian discriminant analysis utilities
+|   |-- losses.py          # Hierarchical soft-label loss
+|   |-- tree.py            # Hierarchy construction and label transforms
+|   `-- utils.py           # Shared training, logging, and plotting helpers
+|-- tests/                 # Unit tests for hierarchy and dataset behavior
+|-- testtime/              # Example cached outputs and report artifacts
+|-- hypothesis1_log.py     # Metaflow training workflow
+|-- hypothesis1_derivatives_log.py
+|                           # Cached logits and derivative metric workflow
+|-- hypothesis1results_log.py
+|                           # Streamlit/report generation workflow
+|-- run_hypothesis1.sh     # GNU Parallel batch launcher
+|-- rolling_hierarchy_description.json
+|                           # Rolling dataset class hierarchy
+`-- environment.yml        # Conda environment specification
+```
 
-Also make sure other folders set in .env exists to avoid error.
+## Setup
 
+Create the Conda environment:
 
-## src/
-The `src` folder has most of the utility functions in it. 
+```bash
+conda env create -f environment.yml
+conda activate cifar100coarse
+```
 
-`datasets/` - This folder includes the image data preparation functions.
+Create a local `.env` file from the example:
 
-`models/ ` - This folder includes the base model in this paper and written in pytorch.
+```bash
+cp .env.example .env
+```
 
-`gda.py` - Gaussian Discriminanct analysis for Mahalanobis distance based classification method.
+Update the paths in `.env` for your machine:
 
-`tree.py`- it contains most of the logic about constructing hierarchy trees from tree descriptions and getting soft or hard label transforms as layers to be used in PyTorch.
+```bash
+ROLLING_DATA_PATH=/path/to/rolling-dataset
+CHECKPOINT_DIR=/path/to/checkpoints
+ARTIFACTS_DIR=/path/to/artifacts
+DERIVATIVES_DIR=/path/to/derivatives
+REPORT_DIR=/path/to/reports
+```
 
-The tree description for the rolling dataset is `rolling_hierarchy_description.json` in the root folder, which should be easy to read and understand. It's just a key-value pair of coarse classes and fine-grained classes.
+The checkpoint directory must exist before importing `settings.py`. Model
+checkpoints are not included in this repository because they are large generated
+artifacts.
 
+## Running Tests
 
-## hypothesis1_log.py
-This is a file that runs Netflix's Metaflow in the background. The tutorial is [here](https://metaflow.org).
+```bash
+pytest tests
+```
 
-This file is responsible for running bunch of experiments and saving the models for later use in the testing stage.
+## Experiment Workflow
 
-In this file, both train and test steps are contained.
+Train models with the Metaflow workflow:
 
-When models are trained, they should be under the folder specified by `CHECKPOINTS_DIR` in the `.env` file.
+```bash
+python hypothesis1_log.py run \
+  --modelType hier \
+  --leftOut A61_PassWear_I \
+  --numEpochs 300 \
+  --beta 1 \
+  --learningRate 0.0001 \
+  --trainSeed 2
+```
 
+Generate cached derivative outputs for repeated metric calculations:
 
+```bash
+python hypothesis1_derivatives_log.py
+```
 
+Launch the Streamlit report interface:
 
-## hypothesis1_derivatives_log.py
-This file precomputes and caches logit outputs of test samples on trained models for reuse and they are stored under the folder specified by 'DERIVATIVES_DIR'. Because logits are reused over and over again when calculating AUROCs, it would be too costly to run experiments through GPU over and over again. 
+```bash
+streamlit run hypothesis1results_log.py
+```
 
-This will need all the trained model parameters contained in 'CHECKPOINTS_DIR', which is currently not included here since bunch of model checkpoints were stored and they are too large. 
+For large sweeps, `run_hypothesis1.sh` shows the GNU Parallel commands used to
+run multiple seeds, left-out classes, and hyperparameter settings.
 
+## Notes
 
-
-## hypothesis1results_log.py
-This is the file that produces most of the figures used in the study. It uses [Streamlit](https://docs.streamlit.io/en/stable/). To use streamlit in visualization, you need to 'streamlit run hypothesis1results_log.py. This is a personal choice. You can use the same code and transform it into a Jupyter Notebook or other platforms.
-
-
-## `run_hypothesis1.py`
-This file shows how to run model trainings in parallel using [GNU Parallel](https://www.gnu.org/software/parallel/). Make sure you know what GNU Parallel is doing before you proceed with this. Once you master GPU Parallel, it makes life quite easy but then you should also keep an eye on your GPU usage so that you don't block others from using it.
-
-
-
-
+- `rolling_hierarchy_description.json` defines the coarse-to-fine label
+  hierarchy used by the tree utilities and soft-label transforms.
+- `testtime/` contains example outputs from a prior run, including summary CSVs,
+  sensitivity plots, t-SNE visualizations, and report PDFs.
+- Local secrets, generated SSH keys, and machine-specific `.env` files are
+  intentionally ignored by Git.

@@ -1,4 +1,8 @@
 .DS_Store
+.env
+id_*
+*.pem
+*.key
 __pycache__/
 *.py[cod]
 .pytest_cache/
