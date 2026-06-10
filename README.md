@@ -1,10 +1,16 @@
 # Novel Fault Detection with Hierarchical Labels
 
+[![arXiv](https://img.shields.io/badge/arXiv-2403.17891-b31b1b.svg)](https://arxiv.org/abs/2403.17891)
+
 This repository contains experiment code for hierarchical anomaly and novelty
 detection on a hot steel rolling image dataset. The project compares flat
 classification against hierarchy-aware soft-label training, then evaluates
 out-of-distribution detection behavior with metrics and plots such as MSP,
 ODIN, and Mahalanobis/GDA distance summaries.
+
+This code accompanies the paper
+[Image-based Novel Fault Detection with Deep Learning Classifiers using Hierarchical Labels](https://arxiv.org/abs/2403.17891),
+accepted in IISE Transactions.
 
 ## Repository Structure
 
@@ -93,6 +99,22 @@ streamlit run hypothesis1results_log.py
 
 For large sweeps, `run_hypothesis1.sh` shows the GNU Parallel commands used to
 run multiple seeds, left-out classes, and hyperparameter settings.
+
+## Citation
+
+If you use this code, please cite:
+
+```bibtex
+@misc{sergin2024imagebased,
+  title = {Image-based Novel Fault Detection with Deep Learning Classifiers using Hierarchical Labels},
+  author = {Sergin, Nurettin and Huang, Jiayu and Chang, Tzyy-Shuh and Yan, Hao},
+  year = {2024},
+  eprint = {2403.17891},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.LG},
+  doi = {10.48550/arXiv.2403.17891}
+}
+```
 
 ## Notes
 
