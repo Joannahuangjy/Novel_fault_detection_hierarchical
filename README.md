@@ -12,6 +12,24 @@ This code accompanies the paper
 [Image-based Novel Fault Detection with Deep Learning Classifiers using Hierarchical Labels](https://arxiv.org/abs/2403.17891),
 accepted in IISE Transactions.
 
+## Selected Figures
+
+Representative figures from the paper experiments are included below. These
+summaries show how hierarchy-aware training affects detection performance across
+left-out fault classes and soft-label temperature settings.
+
+![DMD beta sensitivity](docs/figures/dmd_beta_sensitivity.png)
+
+![MSP beta sensitivity](docs/figures/msp_beta_sensitivity.png)
+
+The t-SNE visualizations below compare learned feature separation for the A61
+left-out fault scenario under flat and hierarchical training.
+
+<p align="center">
+  <img src="docs/figures/tsne_a61_flat.png" alt="A61 t-SNE with flat labels" width="45%">
+  <img src="docs/figures/tsne_a61_hierarchical.png" alt="A61 t-SNE with hierarchical labels" width="45%">
+</p>
+
 ## Repository Structure
 
 ```text
@@ -25,6 +43,7 @@ accepted in IISE Transactions.
 |   `-- utils.py           # Shared training, logging, and plotting helpers
 |-- tests/                 # Unit tests for hierarchy and dataset behavior
 |-- testtime/              # Example cached outputs and report artifacts
+|-- docs/figures/          # Selected figures for the README
 |-- hypothesis1_log.py     # Metaflow training workflow
 |-- hypothesis1_derivatives_log.py
 |                           # Cached logits and derivative metric workflow
